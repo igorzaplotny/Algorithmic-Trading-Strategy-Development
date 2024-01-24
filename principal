@@ -1,0 +1,24 @@
+import pandas as pd
+import yfinance as yf
+symbol = "CYTO"
+start_date = "2020-01-01"
+end_date = "2024-01-01"
+
+data = yf.download(symbol, start=start_date, end=end_date)
+print(data.head())
+print(data.info())
+
+data = data.dropna()
+
+import matplotlib.pyplot as plt
+print("Before plotting")
+# Example: Plotting stock prices
+print("Data head:")
+print(data.head())  # Check the first few rows of data
+
+plt.plot(data['Close'])
+plt.title('Historical Stock Prices for CYTO')
+plt.xlabel('Date')
+plt.ylabel('Closing Price')
+plt.show()rice')
+plt.show()
