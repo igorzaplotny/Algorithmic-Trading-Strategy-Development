@@ -1,0 +1,48 @@
+import yfinance as yf
+import pandas as pd
+import numpy as np
+
+def fetch_stock_data(symbol, start_date, end_date):
+    stock_data = yf.download(symbol, start=start_date, end=end_date)
+    return stock_data
+
+def calculate_technical_indicators(stock_data):
+    # Calculate moving averages
+    stock_data['SMA_50'] = stock_data['Close'].rolling(window=50).mean()
+    stock_data['SMA_200'] = stock_data['Close'].rolling(window=200).mean()
+
+    # Calculate RSI
+    delta = stock_data['Close'].diff()
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
+    avg_gain = gain.rolling(window=14).mean()
+    avg_loss = loss.rolling(window=14).mean()
+    rs = avg_gain / avg_loss
+    stock_data['RSI'] = 100 - (100 / (1 + rs))
+
+    # Calculate Bollinger Bands
+    stock_data['UpperBand'] = stock_data['Close'].rolling(window=20).mean() + 2 * stock_data['Close'].rolling(window=20).std()
+    stock_data['LowerBand'] = stock_data['Close'].rolling(window=20).mean() - 2 * stock_data['Close'].rolling(window=20).std()
+
+    # Calculate MACD
+    stock_data['ShortEMA'] = stock_data['Close'].ewm(span=12, adjust=False).mean()
+    stock_data['LongEMA'] = stock_data['Close'].ewm(span=26, adjust=False).mean()
+    stock_data['MACD'] = stock_data['ShortEMA'] - stock_data['LongEMA']
+    stock_data['SignalLine'] = stock_data['MACD'].ewm(span=9, adjust=False).mean()
+
+    return stock_data
+
+def main():
+    # Replace 'AAPL' with the stock symbol you're interested in
+    symbol = 'AAPL'
+    start_date = '2021-01-01'
+    end_date = '2022-01-01'
+
+    stock_data = fetch_stock_data(symbol, start_date, end_date)
+    stock_data_with_indicators = calculate_technical_indicators(stock_data)
+
+    # Display the resulting DataFrame
+    print(stock_data_with_indicators)
+
+if __name__ == "__main__":
+    main()
