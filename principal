@@ -15,10 +15,33 @@ print("Before plotting")
 # Example: Plotting stock prices
 print("Data head:")
 print(data.head())  # Check the first few rows of data
-
+#igorza
 plt.plot(data['Close'])
 plt.title('Historical Stock Prices for CYTO')
 plt.xlabel('Date')
 plt.ylabel('Closing Price')
 plt.show()rice')
 plt.show()
+
+
+import requests
+
+
+api_key = 'YTPYVQB2OA8LM4MUY'
+symbol = 'CYTO'  
+
+
+endpoint = 'https://www.alphavantage.co/query'
+params = {
+    'function': 'TIME_SERIES_DAILY',
+    'symbol': symbol,
+    'apikey': api_key,
+}
+
+
+response = requests.get(endpoint, params=params)
+
+
+data = response.json()
+
+
